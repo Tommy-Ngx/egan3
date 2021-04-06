@@ -39,7 +39,7 @@ from autoimpute.imputations import MiceImputer, SingleImputer, MultipleImputer
 from autoimpute.analysis import MiLinearRegression
 from sklearn.model_selection import StratifiedShuffleSplit, cross_val_score
 from sklearn.tree import  DecisionTreeClassifier
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPClassifier
 from sklearn.datasets import make_classification
@@ -49,6 +49,12 @@ from sklearn.impute import IterativeImputer
 from sklearn.ensemble import ExtraTreesRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn import linear_model
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+from sklearn.svm import LinearSVC
+from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.gaussian_process.kernels import RBF
+
 from sklearn.linear_model import BayesianRidge
 from sklearn.utils.testing import ignore_warnings
 from sklearn.exceptions import ConvergenceWarning
@@ -128,6 +134,37 @@ def clf_DT(imputed_data_x, y, train_idx, test_idx):
     score = clf.score(imputed_data_x[test_idx], y[test_idx])
     return np.round(score*100,4)
 
+def clf_DT(imputed_data_x, y, train_idx, test_idx):
+    clf = DecisionTreeClassifier()
+    clf.fit(imputed_data_x[train_idx], y[train_idx])
+    score = clf.score(imputed_data_x[test_idx], y[test_idx])
+    return np.round(score*100,4)
+
+def clf_SGD(imputed_data_x, y, train_idx, test_idx):
+    clf = SGDClassifier(max_iter=1000, tol=1e-3)
+    clf.fit(imputed_data_x[train_idx], y[train_idx])
+    score = clf.score(imputed_data_x[test_idx], y[test_idx])
+    return np.round(score*100,4)
+
+def clf_SVC(imputed_data_x, y, train_idx, test_idx):
+    clf = LinearSVC(random_state=0, tol=1e-5)
+    clf.fit(imputed_data_x[train_idx], y[train_idx])
+    score = clf.score(imputed_data_x[test_idx], y[test_idx])
+    return np.round(score*100,4)
+
+def clf_GAU(imputed_data_x, y, train_idx, test_idx):
+    kernel = 1.0 * RBF(1.0)
+    clf = GaussianProcessClassifier(kernel=kernel, random_state=0)
+    clf.fit(imputed_data_x[train_idx], y[train_idx])
+    score = clf.score(imputed_data_x[test_idx], y[test_idx])
+    return np.round(score*100,4)
+
+def clf_LR(imputed_data_x, y, train_idx, test_idx):
+    clf = LogisticRegression(random_state=0)
+    clf.fit(imputed_data_x[train_idx], y[train_idx])
+    score = clf.score(imputed_data_x[test_idx], y[test_idx])
+    return np.round(score*100,4)
+
 def main (args):
   '''Main function for UCI letter and spam datasets.
   
@@ -161,6 +198,7 @@ def main (args):
 
   gan_rs, egain_rs, mice_rs,miss_rs, gan_mlp, gan_dt, egan_mlp, egan_dt = [],[],[],[],[],[],[],[];
 
+  gan_svc, egan_svc, gan_lr, egan_lr, gan_sgd, egan_sgd, gan_gau, egan_gau = [],[],[],[],[],[],[],[];
   for i in range(time):
     # Load data and introduce missingness
     ori_data_x, miss_data_x, data_m, y  = data_loader3(data_name, miss_rate,i)
@@ -213,6 +251,26 @@ def main (args):
     gan_dt.append(gan_score_dt)
     egan_dt.append(egan_score_dt)
 
+    gan_score_lr   = clf_LR(imputed_data_x    , y, train_idx, test_idx)
+    egan_score_lr  = clf_LR(imputed_data_x_e  , y, train_idx, test_idx)
+    gan_lr.append(egan_score_lr)
+    egan_lr.append(egan_score_lr)
+
+    gan_score_svc   = clf_SVC(imputed_data_x    , y, train_idx, test_idx)
+    egan_score_svc  = clf_SVC(imputed_data_x_e  , y, train_idx, test_idx)
+    gan_svc.append(gan_score_svc)
+    egan_svc.append(egan_score_svc)
+
+    gan_score_sgd   = clf_SGD(imputed_data_x    , y, train_idx, test_idx)
+    egan_score_sgd  = clf_SGD(imputed_data_x_e  , y, train_idx, test_idx)
+    gan_sgd.append(gan_score_sgd)
+    egan_sgd.append(egan_score_sgd)
+
+    gan_score_gau   = clf_GAU(imputed_data_x    , y, train_idx, test_idx)
+    egan_score_gau  = clf_GAU(imputed_data_x_e  , y, train_idx, test_idx)
+    gan_gau.append(gan_score_gau)
+    egan_gau.append(egan_score_gau)
+
   print()
   print("Datasets: ",data_name)
   #print(gan_rs,egain_rs, mice_rs,miss_rs)
@@ -225,7 +283,15 @@ def main (args):
   print('MLP  EGAIN: {} ± {}'.format(round(np.mean(egan_mlp)*1,2), round(np.std(egan_mlp),4)))
   print('DT    GAIN: {} ± {}'.format(round(np.mean(gan_dt)*1,2), round(np.std(gan_dt),4)))
   print('DT   EGAIN: {} ± {}'.format(round(np.mean(egan_dt)*1,2), round(np.std(egan_dt),4)))
-
+  print('LR    GAIN: {} ± {}'.format(round(np.mean(gan_lr)*1,2), round(np.std(gan_dt),4)))
+  print('LR   EGAIN: {} ± {}'.format(round(np.mean(egan_lr)*1,2), round(np.std(egan_dt),4)))
+  print('SVC   GAIN: {} ± {}'.format(round(np.mean(gan_svc)*1,2), round(np.std(gan_dt),4)))
+  print('SVC  EGAIN: {} ± {}'.format(round(np.mean(egan_svc)*1,2), round(np.std(egan_dt),4)))
+  print('SGD   GAIN: {} ± {}'.format(round(np.mean(gan_sgd)*1,2), round(np.std(gan_dt),4)))
+  print('SGD  EGAIN: {} ± {}'.format(round(np.mean(egan_sgd)*1,2), round(np.std(egan_dt),4)))
+  print('GAU   GAIN: {} ± {}'.format(round(np.mean(gan_gau)*1,2), round(np.std(gan_dt),4)))
+  print('GAU  EGAIN: {} ± {}'.format(round(np.mean(egan_gau)*1,2), round(np.std(egan_dt),4)))
+  
   # MissForest
 
   #print()
