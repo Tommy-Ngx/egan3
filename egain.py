@@ -138,9 +138,9 @@ def egain (miss_data_x, gain_parameters):
     D_solver = tf1.train.AdamOptimizer(learning_rate=0.002, beta1=0.5, beta2=0.99).minimize(D_loss, var_list=theta_D)
 
     # G loss
-    G_loss_logD = -tf.reduce_mean((1 - M) * 1/2 * tf1.log(D_prob_g + 1e-8))
-    G_loss_minimax = tf.reduce_mean((1 - M) * 1/2 * tf1.log(1. - D_prob_g + 1e-8))
-    G_loss_ls = tf1.reduce_mean((1-M)*tf1.square(D_prob_g - 1))
+    G_loss_logD    = -  1/2 * tf.reduce_mean((1 - M)  * tf1.log(D_prob_g + 1e-8))
+    G_loss_minimax =    1/2 * tf.reduce_mean((1 - M) *  tf1.log(1. - D_prob_g + 1e-8))
+    G_loss_ls      = tf1.reduce_mean((1-M)*tf1.square(D_prob_g - 1))
 
     MSE_loss = tf.reduce_mean((M * X - M * G_sample) ** 2) / tf.reduce_mean(M)
 
