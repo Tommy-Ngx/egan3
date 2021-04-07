@@ -54,6 +54,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.svm import LinearSVC
 from sklearn.gaussian_process import GaussianProcessClassifier
 from sklearn.gaussian_process.kernels import RBF
+from sklearn.impute import SimpleImputer, KNNImputer
 
 from sklearn.linear_model import BayesianRidge
 from sklearn.utils.testing import ignore_warnings
@@ -197,8 +198,11 @@ def main (args):
   
 
   gan_rs, egain_rs, mice_rs,miss_rs, gan_mlp, gan_dt, egan_mlp, egan_dt = [],[],[],[],[],[],[],[];
-
   gan_svc, egan_svc, gan_lr, egan_lr, gan_sgd, egan_sgd, gan_gau, egan_gau = [],[],[],[],[],[],[],[];
+  knn_rmse , mean_rmse, miss_rmse, mice_rmse =  [],[],[],[];
+  knn_lr, knn_svc, knn_sgd, mean_lr, mean_svc, mean_sgd =    [],[],[],[],[],[];
+  miss_lr, miss_svc, miss_sgd, mice_lr, mice_svc, mice_sgd = [],[],[],[],[],[];
+
   for i in range(time):
     # Load data and introduce missingness
     ori_data_x, miss_data_x, data_m, y  = data_loader3(data_name, miss_rate,i)
@@ -208,38 +212,55 @@ def main (args):
         print('=== Working on {}/{} ==='.format(i, time))
 
     # Impute missing data
-    imputed_data_x1   = gain(miss_data_x2, gain_parameters)
-    imputed_data_x_e1 = egain(miss_data_x2, gain_parameters)
-    imputed_data_x    = imputed_data_x1/10000
-    imputed_data_x_e  = imputed_data_x_e1/10000
-    #imp_mf   = IterativeImputer(estimator = DecisionTreeRegressor(), max_iter = 1) #20
-    #imputed_data_mf = imp_mf.fit_transform(miss_data_x)
+    #imputed_data_x1   = gain(miss_data_x2, gain_parameters)
+    #imputed_data_x_e1 = egain(miss_data_x2, gain_parameters)
+    #imputed_data_x    = imputed_data_x1/10000
+    #imputed_data_x_e  = imputed_data_x_e1/10000
+
+
+    imp_MEAN = SimpleImputer(missing_values=np.nan, strategy='mean')
+    imputed_data_x_mean = imp_MEAN.fit_transform(miss_data_x)
+
+    imp_KNN = KNNImputer(missing_values=np.nan)
+    imputed_data_x_knn = imp_KNN.fit_transform(miss_data_x)
+
+    imp_mf   = IterativeImputer(estimator = DecisionTreeRegressor(), max_iter = 20) #20
+    imputed_data_mf = imp_mf.fit_transform(miss_data_x)
     
-    #imp_mice = IterativeImputer(estimator = BayesianRidge(),max_iter = 1) #20
-    #imputed_data_mice = imp_mice.fit_transform(miss_data_x)
+    imp_mice = IterativeImputer(estimator = BayesianRidge(),max_iter = 20) #20
+    imputed_data_mice = imp_mice.fit_transform(miss_data_x)
     
     # Report the RMSE performance
-    rmse      = rmse_loss (ori_data_x, imputed_data_x, data_m)
-    rmse_e    = rmse_loss (ori_data_x, imputed_data_x_e, data_m)
-    #rmse_mf   = rmse_loss (ori_data_x, imputed_data_mf, data_m)
-    #rmse_mice = rmse_loss (ori_data_x, imputed_data_mice, data_m)
+    #rmse      = rmse_loss (ori_data_x, imputed_data_x, data_m)
+    #rmse_e    = rmse_loss (ori_data_x, imputed_data_x_e, data_m)
+    rmse_mean = rmse_loss (ori_data_x, imputed_data_x_mean, data_m)
+    rmse_knn  = rmse_loss (ori_data_x, imputed_data_x_knn, data_m)
+    rmse_mf   = rmse_loss (ori_data_x, imputed_data_mf, data_m)
+    rmse_mice = rmse_loss (ori_data_x, imputed_data_mice, data_m)
 
-    gan_rs.append(rmse)
-    egain_rs.append(rmse_e)
-    #mice_rs.append(rmse_mice)
-    #miss_rs.append(rmse_mf)
+    #gan_rs.append(rmse)
+    #egain_rs.append(rmse_e)
+
+    mean_rmse.append(rmse_mean)
+    knn_rmse.append(rmse_knn)
+    mice_rmse.append(rmse_mice)
+    miss_rmse.append(rmse_mf)
+
 
     mi_data = miss_data_x.astype(float)
     no, dim = imputed_data_x.shape
     miss_data = np.reshape(mi_data,(no,dim))
     np.savetxt("data/missing_data.csv",mi_data,delimiter=',',fmt='%1.2f')
     np.savetxt("data/imputed_data_gain.csv",imputed_data_x, delimiter=',',  fmt='%d')
-    np.savetxt("data/imputed_data_egain.csv",imputed_data_x_e, delimiter=',',  fmt='%d')
+    np.savetxt("data/imputed_data_egain.csv",imputed_data_mice, delimiter=',',  fmt='%d')
 
-    imputed_data_x, _     = normalization(imputed_data_x)
-    imputed_data_x_e, _   = normalization(imputed_data_x_e)
-    #imputed_data_mf, _    = normalization(imputed_data_mf)
-    #imputed_data_mice, _  = normalization(imputed_data_mice)
+    #imputed_data_x, _     = normalization(imputed_data_x)
+    #imputed_data_x_e, _   = normalization(imputed_data_x_e)
+
+    imputed_data_x_mean,_ = normalization(imputed_data_x_mean)
+    imputed_data_x_knn,_  = normalization(imputed_data_x_knn)
+    imputed_data_mf, _    = normalization(imputed_data_mf)
+    imputed_data_mice, _  = normalization(imputed_data_mice)
 
     #gan_score_mlp  = clf_MLP(imputed_data_x  , y, train_idx, test_idx)
     #egan_score_mlp = clf_MLP(imputed_data_x_e, y, train_idx, test_idx)
@@ -251,20 +272,50 @@ def main (args):
     #gan_dt.append(gan_score_dt)
     #egan_dt.append(egan_score_dt)
 
-    gan_score_lr   = clf_LR(imputed_data_x    , y, train_idx, test_idx)
-    egan_score_lr  = clf_LR(imputed_data_x_e  , y, train_idx, test_idx)
-    gan_lr.append(egan_score_lr)
-    egan_lr.append(egan_score_lr)
+    #gan_score_lr   = clf_LR(imputed_data_x    , y, train_idx, test_idx)
+    #egan_score_lr  = clf_LR(imputed_data_x_e  , y, train_idx, test_idx)
 
-    gan_score_svc   = clf_SVC(imputed_data_x    , y, train_idx, test_idx)
-    egan_score_svc  = clf_SVC(imputed_data_x_e  , y, train_idx, test_idx)
-    gan_svc.append(gan_score_svc)
-    egan_svc.append(egan_score_svc)
+    mean_score_lr  = clf_LR(imputed_data_x_mean, y, train_idx, test_idx)
+    knn_score_lr   = clf_LR(imputed_data_x_knn , y, train_idx, test_idx)
+    miss_score_lr  = clf_LR(imputed_data_mf, y, train_idx, test_idx)
+    mice_score_lr  = clf_LR(imputed_data_mice, y, train_idx, test_idx)
+    mean_lr.append(mean_score_lr)
+    knn_lr.append(knn_score_lr)
+    miss_lr.append(miss_score_lr)
+    mice_lr.append(mice_score_lr)
 
-    gan_score_sgd   = clf_SGD(imputed_data_x    , y, train_idx, test_idx)
-    egan_score_sgd  = clf_SGD(imputed_data_x_e  , y, train_idx, test_idx)
-    gan_sgd.append(gan_score_sgd)
-    egan_sgd.append(egan_score_sgd)
+
+    mean_score_svc  = clf_SVC(imputed_data_x_mean, y, train_idx, test_idx)
+    knn_score_svc   = clf_SVC(imputed_data_x_knn , y, train_idx, test_idx)
+    miss_score_svc  = clf_SVC(imputed_data_mf, y, train_idx, test_idx)
+    mice_score_svc  = clf_SVC(imputed_data_mice, y, train_idx, test_idx)
+    mean_svc.append(mean_score_svc)
+    knn_svc.append(knn_score_svc)
+    miss_svc.append(miss_score_svc)
+    mice_svc.append(mice_score_svc)
+
+    mean_score_sgd  = clf_SGD(imputed_data_x_mean, y, train_idx, test_idx)
+    knn_score_sgd   = clf_SGD(imputed_data_x_knn , y, train_idx, test_idx)
+    miss_score_sgd  = clf_SGD(imputed_data_mf, y, train_idx, test_idx)
+    mice_score_sgd  = clf_SGD(imputed_data_mice, y, train_idx, test_idx)
+    mean_sgd.append(mean_score_sgd)
+    knn_sgd.append(knn_score_sgd)
+    miss_sgd.append(miss_score_sgd)
+    mice_sgd.append(mice_score_sgd)
+    #gan_lr.append(egan_score_lr)
+    #egan_lr.append(egan_score_lr)
+
+
+
+    #gan_score_svc   = clf_SVC(imputed_data_x    , y, train_idx, test_idx)
+    #egan_score_svc  = clf_SVC(imputed_data_x_e  , y, train_idx, test_idx)
+    #gan_svc.append(gan_score_svc)
+    #egan_svc.append(egan_score_svc)
+
+    #gan_score_sgd   = clf_SGD(imputed_data_x    , y, train_idx, test_idx)
+    #egan_score_sgd  = clf_SGD(imputed_data_x_e  , y, train_idx, test_idx)
+    #gan_sgd.append(gan_score_sgd)
+    #egan_sgd.append(egan_score_sgd)
 
     #gan_score_gau   = clf_GAU(imputed_data_x    , y, train_idx, test_idx)
     #egan_score_gau  = clf_GAU(imputed_data_x_e  , y, train_idx, test_idx)
@@ -274,10 +325,12 @@ def main (args):
   print()
   print("Datasets: ",data_name)
   #print(gan_rs,egain_rs, mice_rs,miss_rs)
-  print('RMSE  GAIN: {} ± {}'.format(round(np.mean(gan_rs)*1,2), round(np.std(gan_rs),4)))
-  print('RMSE EGAIN: {} ± {}'.format(round(np.mean(egain_rs)*1,2), round(np.std(egain_rs),4)))
-  #print('RMSE  MICE: {} ± {}'.format(round(np.mean(mice_rs)*1,2), round(np.std(mice_rs),4)))
-  #print('RMSE MFORE: {} ± {}'.format(round(np.mean(miss_rs)*1,2), round(np.std(miss_rs),4)))
+  #print('RMSE  GAIN: {} ± {}'.format(round(np.mean(gan_rs)*1,2), round(np.std(gan_rs),4)))
+  #print('RMSE EGAIN: {} ± {}'.format(round(np.mean(egain_rs)*1,2), round(np.std(egain_rs),4)))
+  print('RMSE  MEAN: {} ± {}'.format(round(np.mean(mean_rmse)*1,2), round(np.std(mean_rmse),4)))
+  print('RMSE   KNN: {} ± {}'.format(round(np.mean(knn_rmse)*1,2), round(np.std(knn_rmse),4)))
+  print('RMSE  MICE: {} ± {}'.format(round(np.mean(mice_rmse)*1,2), round(np.std(mice_rmse),4)))
+  print('RMSE MFORE: {} ± {}'.format(round(np.mean(miss_rmse)*1,2), round(np.std(miss_rmse),4)))
   #print()
   #print('MLP   GAIN: {} ± {}'.format(round(np.mean(gan_mlp)*1,2), round(np.std(gan_mlp),4)))
   #print('MLP  EGAIN: {} ± {}'.format(round(np.mean(egan_mlp)*1,2), round(np.std(egan_mlp),4)))
@@ -285,14 +338,26 @@ def main (args):
   #print('DT    GAIN: {} ± {}'.format(round(np.mean(gan_dt)*1,2), round(np.std(gan_dt),4)))
   #print('DT   EGAIN: {} ± {}'.format(round(np.mean(egan_dt)*1,2), round(np.std(egan_dt),4)))
   print()
-  print('LR    GAIN: {} ± {}'.format(round(np.mean(gan_lr)*1,2), round(np.std(gan_lr),4)))
-  print('LR   EGAIN: {} ± {}'.format(round(np.mean(egan_lr)*1,2), round(np.std(egan_lr),4)))
+  #print('LR    GAIN: {} ± {}'.format(round(np.mean(gan_lr)*1,2), round(np.std(gan_dt),4)))
+  #print('LR   EGAIN: {} ± {}'.format(round(np.mean(egan_lr)*1,2), round(np.std(egan_dt),4)))
+  print('LR    MEAN: {} ± {}'.format(round(np.mean(mean_lr)*1,2), round(np.std(mean_lr),4)))
+  print('LR     KNN: {} ± {}'.format(round(np.mean(knn_lr)*1,2), round(np.std(knn_lr),4)))
+  print('LR    MICE: {} ± {}'.format(round(np.mean(mice_lr)*1,2), round(np.std(mice_lr),4)))
+  print('LR MISSFOR: {} ± {}'.format(round(np.mean(miss_lr)*1,2), round(np.std(miss_lr),4)))
   print()
-  print('SVC   GAIN: {} ± {}'.format(round(np.mean(gan_svc)*1,2), round(np.std(gan_svc),4)))
-  print('SVC  EGAIN: {} ± {}'.format(round(np.mean(egan_svc)*1,2), round(np.std(egan_svc),4)))
+  #print('SVC   GAIN: {} ± {}'.format(round(np.mean(gan_svc)*1,2), round(np.std(gan_dt),4)))
+  #print('SVC  EGAIN: {} ± {}'.format(round(np.mean(egan_svc)*1,2), round(np.std(egan_dt),4)))
+  print('SVC   MEAN: {} ± {}'.format(round(np.mean(mean_svc)*1,2), round(np.std(mean_svc),4)))
+  print('SVC    KNN: {} ± {}'.format(round(np.mean(knn_svc)*1,2), round(np.std(knn_svc),4)))
+  print('SVC   MICE: {} ± {}'.format(round(np.mean(mice_svc)*1,2), round(np.std(mice_svc),4)))
+  print('SVC   MISS: {} ± {}'.format(round(np.mean(miss_svc)*1,2), round(np.std(miss_svc),4)))
   print()
-  print('SGD   GAIN: {} ± {}'.format(round(np.mean(gan_sgd)*1,2), round(np.std(gan_sgd),4)))
-  print('SGD  EGAIN: {} ± {}'.format(round(np.mean(egan_sgd)*1,2), round(np.std(egan_sgd),4)))
+  #print('SGD   GAIN: {} ± {}'.format(round(np.mean(gan_sgd)*1,2), round(np.std(gan_dt),4)))
+  #print('SGD  EGAIN: {} ± {}'.format(round(np.mean(egan_sgd)*1,2), round(np.std(egan_dt),4)))
+  print('SGD   MEAN: {} ± {}'.format(round(np.mean(mean_sgd)*1,2), round(np.std(mean_sgd),4)))
+  print('SGD    KNN: {} ± {}'.format(round(np.mean(knn_sgd)*1,2), round(np.std(knn_sgd),4)))
+  print('SGD   MICE: {} ± {}'.format(round(np.mean(mice_sgd)*1,2), round(np.std(mice_sgd),4)))
+  print('SGD   MISS: {} ± {}'.format(round(np.mean(miss_sgd)*1,2), round(np.std(miss_sgd),4)))
   #print()
   #print('GAU   GAIN: {} ± {}'.format(round(np.mean(gan_gau)*1,2), round(np.std(gan_dt),4)))
   #print('GAU  EGAIN: {} ± {}'.format(round(np.mean(egan_gau)*1,2), round(np.std(egan_dt),4)))
