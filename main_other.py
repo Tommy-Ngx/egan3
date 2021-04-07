@@ -395,7 +395,7 @@ def main (args):
   #print( 'Save results in Imputed_data_MICE.csv')
 
 
-  return imputed_data_x, rmse
+  return imputed_data_mf, rmse_mf
 
 
 if __name__ == '__main__':  
