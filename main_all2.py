@@ -253,7 +253,7 @@ def main (args):
 
     gan_score_lr   = clf_LR(imputed_data_x    , y, train_idx, test_idx)
     egan_score_lr  = clf_LR(imputed_data_x_e  , y, train_idx, test_idx)
-    gan_lr.append(egan_score_lr)
+    gan_lr.append(gan_score_lr)
     egan_lr.append(egan_score_lr)
 
     gan_score_svc   = clf_SVC(imputed_data_x    , y, train_idx, test_idx)

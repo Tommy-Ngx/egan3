@@ -135,12 +135,6 @@ def clf_DT(imputed_data_x, y, train_idx, test_idx):
     score = clf.score(imputed_data_x[test_idx], y[test_idx])
     return np.round(score*100,4)
 
-def clf_DT(imputed_data_x, y, train_idx, test_idx):
-    clf = DecisionTreeClassifier()
-    clf.fit(imputed_data_x[train_idx], y[train_idx])
-    score = clf.score(imputed_data_x[test_idx], y[test_idx])
-    return np.round(score*100,4)
-
 def clf_SGD(imputed_data_x, y, train_idx, test_idx):
     clf = SGDClassifier(max_iter=1000, tol=1e-3)
     clf.fit(imputed_data_x[train_idx], y[train_idx])
@@ -219,17 +213,17 @@ def main (args):
 
 
     imp_MEAN = SimpleImputer(missing_values=np.nan, strategy='mean')
-    #imputed_data_x_mean = imp_MEAN.fit_transform(miss_data_x)
-    imputed_data_x_mean = imp_MEAN.fit_transform(miss_data_x2) *1/10000
+    imputed_data_x_mean = imp_MEAN.fit_transform(miss_data_x)
+    #imputed_data_x_mean = imp_MEAN.fit_transform(miss_data_x2)  *1/10000
 
     imp_KNN = KNNImputer(missing_values=np.nan)
-    imputed_data_x_knn = imp_KNN.fit_transform(miss_data_x2) *1/10000
+    imputed_data_x_knn = imp_KNN.fit_transform(miss_data_x)# *1/10000
 
-    imp_mf   = IterativeImputer(estimator = DecisionTreeRegressor(), max_iter = 20) #20
-    imputed_data_mf = imp_mf.fit_transform(miss_data_x2) *1/10000
+    imp_mf   = IterativeImputer(estimator = DecisionTreeRegressor(), max_iter = 3) #20
+    imputed_data_mf = imp_mf.fit_transform(miss_data_x) #*1/10000
     
-    imp_mice = IterativeImputer(estimator = BayesianRidge(),max_iter = 20) #20
-    imputed_data_mice = imp_mice.fit_transform(miss_data_x2) *1/10000
+    imp_mice = IterativeImputer(estimator = BayesianRidge(),max_iter = 3) #20
+    imputed_data_mice = imp_mice.fit_transform(miss_data_x) #*1/10000
     
     # Report the RMSE performance
     rmse      = rmse_loss (ori_data_x, imputed_data_x, data_m)
@@ -252,8 +246,8 @@ def main (args):
     no, dim = imputed_data_mice.shape
     miss_data = np.reshape(mi_data,(no,dim))
     np.savetxt("data/missing_data.csv",mi_data,delimiter=',',fmt='%1.2f')
-    #np.savetxt("data/imputed_data_gain.csv",imputed_data_x, delimiter=',',  fmt='%d')
-    np.savetxt("data/imputed_data_egain.csv",imputed_data_mice, delimiter=',',  fmt='%d')
+    np.savetxt("data/imputed_data_gain.csv",imputed_data_x, delimiter=',',  fmt='%d')
+    np.savetxt("data/imputed_data_egain.csv",imputed_data_x_e, delimiter=',',  fmt='%d')
 
     imputed_data_x, _     = normalization(imputed_data_x)
     imputed_data_x_e, _   = normalization(imputed_data_x_e)
@@ -281,7 +275,7 @@ def main (args):
     miss_score_lr  = clf_LR(imputed_data_mf, y, train_idx, test_idx)
     mice_score_lr  = clf_LR(imputed_data_mice, y, train_idx, test_idx)
     
-    gan_lr.append(egan_score_lr)
+    gan_lr.append(gan_score_lr)
     egan_lr.append(egan_score_lr)
     mean_lr.append(mean_score_lr)
     knn_lr.append(knn_score_lr)
