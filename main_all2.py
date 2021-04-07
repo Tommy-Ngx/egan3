@@ -210,8 +210,8 @@ def main (args):
     # Impute missing data
     imputed_data_x1   = gain(miss_data_x2, gain_parameters)
     imputed_data_x_e1 = egain(miss_data_x2, gain_parameters)
-    imputed_data_x    = imputed_data_x1/10000
-    imputed_data_x_e  = imputed_data_x_e1/10000
+    imputed_data_x    = imputed_data_x *1/10000
+    imputed_data_x_e  = imputed_data_x_e *1/10000
     #imp_mf   = IterativeImputer(estimator = DecisionTreeRegressor(), max_iter = 1) #20
     #imputed_data_mf = imp_mf.fit_transform(miss_data_x)
     
