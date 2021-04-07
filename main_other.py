@@ -248,10 +248,10 @@ def main (args):
 
 
     mi_data = miss_data_x.astype(float)
-    no, dim = imputed_data_x.shape
+    no, dim = imputed_data_mice.shape
     miss_data = np.reshape(mi_data,(no,dim))
     np.savetxt("data/missing_data.csv",mi_data,delimiter=',',fmt='%1.2f')
-    np.savetxt("data/imputed_data_gain.csv",imputed_data_x, delimiter=',',  fmt='%d')
+    #np.savetxt("data/imputed_data_gain.csv",imputed_data_x, delimiter=',',  fmt='%d')
     np.savetxt("data/imputed_data_egain.csv",imputed_data_mice, delimiter=',',  fmt='%d')
 
     #imputed_data_x, _     = normalization(imputed_data_x)
