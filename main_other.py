@@ -219,16 +219,17 @@ def main (args):
 
 
     imp_MEAN = SimpleImputer(missing_values=np.nan, strategy='mean')
-    imputed_data_x_mean = imp_MEAN.fit_transform(miss_data_x)
+    #imputed_data_x_mean = imp_MEAN.fit_transform(miss_data_x)
+    imputed_data_x_mean = imp_MEAN.fit_transform(miss_data_x2) *1/10000
 
     imp_KNN = KNNImputer(missing_values=np.nan)
-    imputed_data_x_knn = imp_KNN.fit_transform(miss_data_x)
+    imputed_data_x_knn = imp_KNN.fit_transform(miss_data_x2) *1/10000
 
     imp_mf   = IterativeImputer(estimator = DecisionTreeRegressor(), max_iter = 20) #20
-    imputed_data_mf = imp_mf.fit_transform(miss_data_x)
+    imputed_data_mf = imp_mf.fit_transform(miss_data_x2) *1/10000
     
     imp_mice = IterativeImputer(estimator = BayesianRidge(),max_iter = 20) #20
-    imputed_data_mice = imp_mice.fit_transform(miss_data_x)
+    imputed_data_mice = imp_mice.fit_transform(miss_data_x2) *1/10000
     
     # Report the RMSE performance
     #rmse      = rmse_loss (ori_data_x, imputed_data_x, data_m)
