@@ -135,9 +135,11 @@ def egain (miss_data_x, gain_parameters):
     D_prob = discriminator(Hat_X, H)
     D_loss_temp = -tf.reduce_mean((M * tf1.log(D_prob + 1e-8) + (1 - M) * tf1.log(1. - D_prob + 1e-8)))
     D_loss = D_loss_temp
+    # Updated parramter
     D_solver = tf1.train.AdamOptimizer(learning_rate=0.002, beta1=0.5, beta2=0.99).minimize(D_loss, var_list=theta_D)
 
     # G loss
+    #Update loss function
     G_loss_logD    = -   tf.reduce_mean((1 - M)  * 1/2 *  tf1.log(D_prob_g + 1e-8))
     G_loss_minimax =     tf.reduce_mean((1 - M)  * 1/2 *  tf1.log(1. - D_prob_g + 1e-8))
     G_loss_ls      = tf1.reduce_mean((1-M)*tf1.square(D_prob_g - 1))
@@ -148,6 +150,7 @@ def egain (miss_data_x, gain_parameters):
     G_loss_minimax_all = G_loss_minimax + alpha * MSE_loss
     G_loss_ls_all = G_loss_ls + alpha * MSE_loss
 
+    #Update parramter
     G_solver_logD = tf1.train.AdamOptimizer(learning_rate=0.002, beta1=0.5, beta2=0.99).minimize(G_loss_logD_all, var_list=theta_G)
     G_solver_minimax = tf1.train.AdamOptimizer(learning_rate=0.002, beta1=0.5, beta2=0.99).minimize(G_loss_minimax_all, var_list=theta_G)
     G_solver_ls = tf1.train.AdamOptimizer(learning_rate=0.002, beta1=0.5, beta2=0.99).minimize(G_loss_ls_all, var_list=theta_G)
@@ -163,7 +166,6 @@ def egain (miss_data_x, gain_parameters):
                         )
 
     ## Iterations
-
     sess = tf1.Session()
     # Start Iterations
 
@@ -275,7 +277,6 @@ def egain (miss_data_x, gain_parameters):
             sess.run([D_solver], feed_dict={X: X_mb, M: M_mb, fake_X: gen_samples, B: B_mb})
 
     ## Return imputed data
-
     idx = np.argmax(fitness_best)
     # print(idx)
     for i in range(len(theta_G)):
