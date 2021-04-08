@@ -109,7 +109,7 @@ def rounding (imputed_data, data_x):
     temp = data_x[~np.isnan(data_x[:, i]), i]
     # Only for the categorical variable
     if len(np.unique(temp)) < 20:
-      rounded_data[:, i] = np.round(rounded_data[:, i])
+      rounded_data[:, i] = np.round(rounded_data[:, i],10)
       
   return rounded_data
 
@@ -221,7 +221,7 @@ def sample_batch_binary(dim, batch_size):
     B_mb[i, skip_index[i]] = 0
   return B_mb
 
-  def lrelu(x, leak=0.2, name="lrelu"):
+def lrelu(x, leak=0.2, name="lrelu"):
     #with tf.variable_scope(name):
         f1 = 0.5 * (1 + leak)
         f2 = 0.5 * (1 - leak)
