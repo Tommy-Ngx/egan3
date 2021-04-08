@@ -221,10 +221,10 @@ def main (args):
 
     #imp_mf   = IterativeImputer(estimator = DecisionTreeRegressor(), max_iter = 2) #20
     #imputed_data_mf = imp_mf.fit_transform(miss_data_x) #*1/10000
-    imp_mf = MissForest(max_iter=2)
+    imp_mf = MissForest(max_iter=1)
     imputed_data_mf = imp_mf.fit_transform(miss_data_x)
     
-    imp_mice = IterativeImputer(estimator = BayesianRidge(),max_iter = 3, initial_strategy= 'mean') #20
+    imp_mice = IterativeImputer(estimator = BayesianRidge(),max_iter = 2, initial_strategy= 'mean') #20
     imputed_data_mice = imp_mice.fit_transform(miss_data_x) #*1/10000
     
     # Report the RMSE performance
