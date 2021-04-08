@@ -224,7 +224,7 @@ def main (args):
     imp_mf = MissForest(max_iter=2)
     imputed_data_mf = imp_mf.fit_transform(miss_data_x)
     
-    imp_mice = IterativeImputer(estimator = BayesianRidge(),max_iter = 3, initial_strategy= ’median’) #20
+    imp_mice = IterativeImputer(estimator = BayesianRidge(),max_iter = 3, initial_strategy= 'mean') #20
     imputed_data_mice = imp_mice.fit_transform(miss_data_x) #*1/10000
     
     # Report the RMSE performance
