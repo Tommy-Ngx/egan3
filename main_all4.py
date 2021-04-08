@@ -201,15 +201,15 @@ def main (args):
     # Load data and introduce missingness
     ori_data_x, miss_data_x, data_m, y  = data_loader3(data_name, miss_rate,i)
     train_idx, test_idx = train_test_split(range(len(y)), test_size=0.2, stratify=y, random_state=i)
-    miss_data_x2 = miss_data_x * 10000
+    miss_data_x2 = miss_data_x #* 10000
     if i % 5 == 0:
         print('=== Working on {}/{} ==='.format(i, time))
 
     # Impute missing data
     imputed_data_x1   = gain(miss_data_x2, gain_parameters)
     imputed_data_x_e1 = egain(miss_data_x2, gain_parameters)
-    imputed_data_x    = imputed_data_x1 * 1/10000
-    imputed_data_x_e  = imputed_data_x_e1 * 1/10000
+    imputed_data_x    = imputed_data_x1 #* 1/10000
+    imputed_data_x_e  = imputed_data_x_e1 #* 1/10000
 
 
     imp_MEAN = SimpleImputer(missing_values=np.nan, strategy='mean')
