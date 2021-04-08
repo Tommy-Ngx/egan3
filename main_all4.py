@@ -200,7 +200,7 @@ def main (args):
   for i in range(time):
     # Load data and introduce missingness
     ori_data_x, miss_data_x, data_m, y  = data_loader3(data_name, miss_rate,i)
-    train_idx, test_idx = train_test_split(range(len(y)), test_size=0.3, stratify=y, random_state=42)
+    train_idx, test_idx = train_test_split(range(len(y)), test_size=0.2, stratify=y, random_state=42)
     miss_data_x2 = miss_data_x * 10000
     if i % 5 == 0:
         print('=== Working on {}/{} ==='.format(i, time))
@@ -245,9 +245,9 @@ def main (args):
     mi_data = miss_data_x.astype(float)
     no, dim = imputed_data_mice.shape
     miss_data = np.reshape(mi_data,(no,dim))
-    np.savetxt("data/missing_data.csv",mi_data,delimiter=',',fmt='%1.2f')
-    np.savetxt("data/imputed_data_gain.csv",imputed_data_x, delimiter=',',  fmt='%d')
-    np.savetxt("data/imputed_data_egain.csv",imputed_data_x_e, delimiter=',',  fmt='%d')
+    np.savetxt("data/{}missing_data.csv".format(i),mi_data,delimiter=',',fmt='%1.2f')
+    np.savetxt("data/{}imputed_data_gain.csv".format(i),imputed_data_x, delimiter=',',  fmt='%d')
+    np.savetxt("data/{}imputed_data_egain.csv".format(i),imputed_data_x_e, delimiter=',',  fmt='%d')
 
     imputed_data_x, _     = normalization(imputed_data_x)
     imputed_data_x_e, _   = normalization(imputed_data_x_e)
