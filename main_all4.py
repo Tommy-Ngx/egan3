@@ -124,7 +124,7 @@ def auc_lr(impute,data):
 
 def clf_MLP(imputed_data_x, y, train_idx, test_idx):
     clf = MLPClassifier(hidden_layer_sizes=len(imputed_data_x[1])//2, max_iter=500,
-                                early_stopping=True, learning_rate='constant', learning_rate_init=0.1)
+                                 learning_rate='constant', learning_rate_init=0.1)
     clf.fit(imputed_data_x[train_idx], y[train_idx])
     score = clf.score(imputed_data_x[test_idx], y[test_idx])
     return np.round(score*100,4)
@@ -339,7 +339,7 @@ def main (args):
   print('DT    GAIN: {} ± {}'.format(round(np.mean(gan_dt)*1,2), round(np.std(gan_dt),4)))
   print('DT   EGAIN: {} ± {}'.format(round(np.mean(egan_dt)*1,2), round(np.std(egan_dt),4)))
   print()
-  
+
   print('LR    GAIN: {} ± {}'.format(round(np.mean(gan_lr)*1,2), round(np.std(gan_lr),4)))
   #print(gan_lr)
   print('LR   EGAIN: {} ± {}'.format(round(np.mean(egan_lr)*1,2), round(np.std(egan_lr),4)))
