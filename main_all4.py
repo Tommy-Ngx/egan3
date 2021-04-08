@@ -224,7 +224,7 @@ def main (args):
     imp_mf = MissForest(max_iter=1)
     imputed_data_mf = imp_mf.fit_transform(miss_data_x)
     
-    imp_mice = IterativeImputer(estimator = BayesianRidge(),max_iter = 2, initial_strategy= 'mean') #20
+    imp_mice = IterativeImputer(estimator = BayesianRidge(),max_iter = 1, initial_strategy= 'mean') #20
     imputed_data_mice = imp_mice.fit_transform(miss_data_x) #*1/10000
     
     # Report the RMSE performance
@@ -259,15 +259,15 @@ def main (args):
     imputed_data_mf, _    = normalization(imputed_data_mf)
     imputed_data_mice, _  = normalization(imputed_data_mice)
 
-    #gan_score_mlp  = clf_MLP(imputed_data_x  , y, train_idx, test_idx)
-    #egan_score_mlp = clf_MLP(imputed_data_x_e, y, train_idx, test_idx)
-    #gan_mlp.append(gan_score_mlp)
-    #egan_mlp.append(egan_score_mlp)
+    gan_score_mlp  = clf_MLP(imputed_data_x  , y, train_idx, test_idx)
+    egan_score_mlp = clf_MLP(imputed_data_x_e, y, train_idx, test_idx)
+    gan_mlp.append(gan_score_mlp)
+    egan_mlp.append(egan_score_mlp)
 
-    #gan_score_dt   = clf_DT(imputed_data_x    , y, train_idx, test_idx)
-    #egan_score_dt  = clf_DT(imputed_data_x_e  , y, train_idx, test_idx)
-    #gan_dt.append(gan_score_dt)
-    #egan_dt.append(egan_score_dt)
+    gan_score_dt   = clf_DT(imputed_data_x    , y, train_idx, test_idx)
+    egan_score_dt  = clf_DT(imputed_data_x_e  , y, train_idx, test_idx)
+    gan_dt.append(gan_score_dt)
+    egan_dt.append(egan_score_dt)
 
     gan_score_lr   = clf_LR(imputed_data_x    , y, train_idx, test_idx)
     egan_score_lr  = clf_LR(imputed_data_x_e  , y, train_idx, test_idx)
@@ -283,7 +283,6 @@ def main (args):
     knn_lr.append(knn_score_lr)
     miss_lr.append(miss_score_lr)
     mice_lr.append(mice_score_lr)
-
 
     mean_score_svc  = clf_SVC(imputed_data_x_mean, y, train_idx, test_idx)
     knn_score_svc   = clf_SVC(imputed_data_x_knn , y, train_idx, test_idx)
@@ -333,13 +332,14 @@ def main (args):
   #print(miss_rmse)
   print('RMSE MFORE: {} ± {}'.format(round(np.mean(miss_rmse)*1,2), round(np.std(miss_rmse),4)))
   #print(miss_rmse)
-  #print()
-  #print('MLP   GAIN: {} ± {}'.format(round(np.mean(gan_mlp)*1,2), round(np.std(gan_mlp),4)))
-  #print('MLP  EGAIN: {} ± {}'.format(round(np.mean(egan_mlp)*1,2), round(np.std(egan_mlp),4)))
-  #print()
-  #print('DT    GAIN: {} ± {}'.format(round(np.mean(gan_dt)*1,2), round(np.std(gan_dt),4)))
-  #print('DT   EGAIN: {} ± {}'.format(round(np.mean(egan_dt)*1,2), round(np.std(egan_dt),4)))
   print()
+  print('MLP   GAIN: {} ± {}'.format(round(np.mean(gan_mlp)*1,2), round(np.std(gan_mlp),4)))
+  print('MLP  EGAIN: {} ± {}'.format(round(np.mean(egan_mlp)*1,2), round(np.std(egan_mlp),4)))
+  print()
+  print('DT    GAIN: {} ± {}'.format(round(np.mean(gan_dt)*1,2), round(np.std(gan_dt),4)))
+  print('DT   EGAIN: {} ± {}'.format(round(np.mean(egan_dt)*1,2), round(np.std(egan_dt),4)))
+  print()
+  
   print('LR    GAIN: {} ± {}'.format(round(np.mean(gan_lr)*1,2), round(np.std(gan_lr),4)))
   #print(gan_lr)
   print('LR   EGAIN: {} ± {}'.format(round(np.mean(egan_lr)*1,2), round(np.std(egan_lr),4)))
