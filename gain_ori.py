@@ -125,8 +125,8 @@ def gain (data_x, gain_parameters):
   ## GAIN loss
   D_loss_temp = -tf.reduce_mean(M * tf1.log(D_prob + 1e-8) \
                                 + (1-M) * tf1.log(1. - D_prob + 1e-8)) 
-  
-  G_loss_temp = -tf.reduce_mean((1-M) * tf1.log(D_prob + 1e-8))
+  #update 
+  G_loss_temp = -tf.reduce_mean((1-M) * 1/2 * tf1.log(D_prob + 1e-8))
   
   MSE_loss = \
   tf.reduce_mean((M * X - M * G_sample)**2) / tf.reduce_mean(M)
@@ -135,8 +135,9 @@ def gain (data_x, gain_parameters):
   G_loss = G_loss_temp + alpha * MSE_loss 
   
   ## GAIN solver
-  D_solver = tf1.train.AdamOptimizer().minimize(D_loss, var_list=theta_D)
-  G_solver = tf1.train.AdamOptimizer().minimize(G_loss, var_list=theta_G)
+  # Update 
+  D_solver = tf1.train.AdamOptimizer(learning_rate=0.002, beta1=0.5, beta2=0.99).minimize(D_loss, var_list=theta_D)
+  G_solver = tf1.train.AdamOptimizer(learning_rate=0.002, beta1=0.5, beta2=0.99).minimize(G_loss, var_list=theta_G)
   
   ## Iterations
   sess = tf1.Session()
@@ -179,5 +180,5 @@ def gain (data_x, gain_parameters):
   
   # Rounding
   imputed_data = rounding(imputed_data, data_x)  
-          
+     github     
   return imputed_data
