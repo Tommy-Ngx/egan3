@@ -59,7 +59,7 @@ def data_loader2 (data_name, miss_rate, random):
   '''
   
   # Load data
-  if data_name in ['obesity', 'hepatitisC', 'audit','letter', 'spam', 'breast', 'credit', 'news','blood','vowel','ecoli','ionosphere','parkinsons','parkinsons2','seedst','vehicle','vertebral','wine','banknote','balance','yeast','bean','shill']:
+  if data_name in ['obesity', 'hepatitisC', 'audit','letter', 'spam', 'breast', 'credit', 'news','blood','vowel','ecoli','ionosphere','parkinsons','parkinsons2','seedst','vehicle','vertebral','wine','banknote','balance','yeast','bean','shill','firewall']:
     file_name = 'data/'+data_name+'.csv'
     data_x = np.loadtxt(file_name, delimiter=",", skiprows=1)
   elif data_name == 'mnist':
@@ -78,7 +78,7 @@ def data_loader2 (data_name, miss_rate, random):
 
 def data_loader3 (data_name, miss_rate, random):
   # Load data
-  if data_name in ['obesity', 'hepatitisC', 'audit','letter', 'spam', 'breast', 'credit', 'news','blood','vowel','ecoli','ionosphere','parkinsons','parkinsons2','seedst','vehicle','vertebral','wine','banknote','balance','yeast','bean','shill','phishing']:
+  if data_name in ['obesity', 'hepatitisC', 'audit','letter', 'spam', 'breast', 'credit', 'news','blood','vowel','ecoli','ionosphere','parkinsons','parkinsons2','seedst','vehicle','vertebral','wine','banknote','balance','yeast','bean','shill','phishing','firewall']:
     file_name = 'data/'+data_name+'_full.csv'
     df = pd.read_csv(file_name)
     df = df.rename(columns={'target': 'Class'})
@@ -98,6 +98,9 @@ def data_loader3 (data_name, miss_rate, random):
       le = LabelEncoder()
       y = le.fit_transform(y)
     elif data_name == 'bean':
+      le = LabelEncoder()
+      y = le.fit_transform(y)
+    elif data_name == 'firewall':
       le = LabelEncoder()
       y = le.fit_transform(y)
 
