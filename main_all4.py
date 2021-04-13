@@ -199,8 +199,8 @@ def main (args):
 
   for i in range(time):
     # Load data and introduce missingness
-    ori_data_x, miss_data_x, data_m, y  = data_loader3(data_name, miss_rate, 7) #i) block i 
-    train_idx, test_idx = train_test_split(range(len(y)), test_size=0.2, stratify=y, random_state= 7) #i) block i
+    ori_data_x, miss_data_x, data_m, y  = data_loader3(data_name, miss_rate, i)# 7) #i) block i 
+    train_idx, test_idx = train_test_split(range(len(y)), test_size=0.2, stratify=y, random_state= i)#7) #i) block i
     miss_data_x2 = miss_data_x #* 10000
     if i % 5 == 0:
         print('=== Working on {}/{} ==='.format(i, time))
