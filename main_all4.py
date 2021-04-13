@@ -220,12 +220,12 @@ def main (args):
     imputed_data_x_knn = imp_KNN.fit_transform(miss_data_x)# *1/10000
 
     # ExtraTreesRegressor: similar to missForest in R; DecisionTreeRegressor()
-    imp_mf   = IterativeImputer(estimator = ExtraTreesRegressor(), max_iter = 1, initial_strategy= 'most_frequent', n_nearest_features = 3, imputation_order = 'roman') #20
+    imp_mf   = IterativeImputer(estimator = ExtraTreesRegressor(), max_iter = 1, initial_strategy= "constant", n_nearest_features = 1, imputation_order = 'descending') #20
     imputed_data_mf = imp_mf.fit_transform(miss_data_x) #*1/10000
     #imp_mf = MissForest(max_iter=1)
     #imputed_data_mf = imp_mf.fit_transform(miss_data_x)
     
-    imp_mice = IterativeImputer(estimator = BayesianRidge(), max_iter = 1, initial_strategy= 'most_frequent', n_nearest_features = 3, imputation_order = 'roman')# 'mean') #20
+    imp_mice = IterativeImputer(estimator = BayesianRidge(), max_iter = 1, initial_strategy= 'constant', n_nearest_features = 1, imputation_order = 'descending')# 'mean') #20
     imputed_data_mice = imp_mice.fit_transform(miss_data_x) #*1/10000
     
     # Report the RMSE performance
