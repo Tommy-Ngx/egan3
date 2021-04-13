@@ -214,19 +214,23 @@ def main (args):
 
     imp_MEAN = SimpleImputer(missing_values=np.nan, strategy='mean')
     imputed_data_x_mean = imp_MEAN.fit_transform(miss_data_x)
+    imputed_data_x_mean = imputed_data_x_mean.round()
     #imputed_data_x_mean = imp_MEAN.fit_transform(miss_data_x2)  *1/10000
 
     imp_KNN = KNNImputer(missing_values=np.nan, n_neighbors=3)
     imputed_data_x_knn = imp_KNN.fit_transform(miss_data_x)# *1/10000
+    imputed_data_x_knn = imputed_data_x_knn.round()
 
     # ExtraTreesRegressor: similar to missForest in R; DecisionTreeRegressor()
     imp_mf   = IterativeImputer(estimator = ExtraTreesRegressor(), max_iter = 1, initial_strategy= "constant", n_nearest_features = 1, imputation_order = 'descending') #20
     imputed_data_mf = imp_mf.fit_transform(miss_data_x) #*1/10000
+    imputed_data_mf = imputed_data_mf.round()
     #imp_mf = MissForest(max_iter=1)
     #imputed_data_mf = imp_mf.fit_transform(miss_data_x)
     
     imp_mice = IterativeImputer(estimator = BayesianRidge(), max_iter = 1, initial_strategy= 'constant', n_nearest_features = 1, imputation_order = 'descending')# 'mean') #20
     imputed_data_mice = imp_mice.fit_transform(miss_data_x) #*1/10000
+    imputed_data_mice = imputed_data_mice.round()
     
     # Report the RMSE performance
     rmse      = rmse_loss (ori_data_x, imputed_data_x, data_m)
