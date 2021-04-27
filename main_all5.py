@@ -181,8 +181,8 @@ def main (args):
   random    = args.seed
   time      = args.time
 
-  x = data_name
-  x = txt.split("+")
+  x1 = data_name
+  x = x1.split("+")
 
   gain_parameters = {'batch_size': args.batch_size,
                      'hint_rate': args.hint_rate,
@@ -190,9 +190,10 @@ def main (args):
                      'iterations': args.iterations,
                      'time': args.time}
    # Load data and introduce missingness
- 
+    
   #ori_data_x, miss_data_x, data_m = data_loader2(data_name, miss_rate,random)
-  col1 = [miss_rate+' Missing','RMSE','RMSE','RMSE','RMSE','RMSE','RMSE','MLP','MLP','D.Tree','D.Tree','LogisticR','LogisticR','LogisticR','LogisticR','LogisticR','LogisticR','SVC','SVC','SVC','SVC','SVC','SVC','SGD','SGD','SGD','SGD','SGD','SGD']
+  miss_rate_caption = "{}% Missing".format(miss_rate)
+  col1 = [miss_rate_caption,'RMSE','RMSE','RMSE','RMSE','RMSE','RMSE','MLP','MLP','D.Tree','D.Tree','LogisticR','LogisticR','LogisticR','LogisticR','LogisticR','LogisticR','SVC','SVC','SVC','SVC','SVC','SVC','SGD','SGD','SGD','SGD','SGD','SGD']
   col2 = ['Method', 'EGAIN', 'GAIN', 'MEAN','KNN','MICE','M.FORE','EGAIN','GAIN','EGAIN','GAIN','EGAIN', 'GAIN', 'MEAN','KNN','MICE','M.FORE','EGAIN', 'GAIN', 'MEAN','KNN','MICE','M.FORE','EGAIN', 'GAIN', 'MEAN','KNN','MICE','M.FORE']
   result = [col1,col2]
 
