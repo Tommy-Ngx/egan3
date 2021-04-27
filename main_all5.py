@@ -192,7 +192,7 @@ def main (args):
    # Load data and introduce missingness
  
   #ori_data_x, miss_data_x, data_m = data_loader2(data_name, miss_rate,random)
-  miss_rate_caption = "{}% Missing".format(miss_rate)
+  miss_rate_caption = "{}% Missing".format(int(miss_rate*100))
   col1 = [miss_rate_caption,'RMSE','RMSE','RMSE','RMSE','RMSE','RMSE','MLP','MLP','D.Tree','D.Tree','LogisticR','LogisticR','LogisticR','LogisticR','LogisticR','LogisticR','SVC','SVC','SVC','SVC','SVC','SVC','SGD','SGD','SGD','SGD','SGD','SGD']
   col2 = ['Method', 'EGAIN', 'GAIN', 'MEAN','KNN','MICE','M.FORE','EGAIN','GAIN','EGAIN','GAIN','EGAIN', 'GAIN', 'MEAN','KNN','MICE','M.FORE','EGAIN', 'GAIN', 'MEAN','KNN','MICE','M.FORE','EGAIN', 'GAIN', 'MEAN','KNN','MICE','M.FORE']
   result = [col1,col2]
@@ -436,9 +436,12 @@ def main (args):
       
       '''
       result.append(col3)
-      df_result = pd.DataFrame(result)
-      print(df_result.T)
-
+      my_array = np.asarray(result)
+      #print(my_array)
+      df_result = pd.DataFrame(my_array)
+      df_result_tran = df_result.transpose()
+      print(df_result_tran.to_string(index=False,header=False))
+      df_result.to_csv("result.csv", encoding='utf-8', index=False, header=False)
 
       #print(miss_sgd)
       #print()
