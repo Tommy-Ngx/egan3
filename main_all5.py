@@ -182,7 +182,7 @@ def main (args):
   time      = args.time
 
   x = data_name
-  x = txt.split("#")
+  x = txt.split("+")
 
   gain_parameters = {'batch_size': args.batch_size,
                      'hint_rate': args.hint_rate,
