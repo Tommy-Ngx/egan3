@@ -441,7 +441,7 @@ def main (args):
       df_result = pd.DataFrame(my_array)
       df_result_tran = df_result.transpose()
       print(df_result_tran.to_string(index=False,header=False))
-      df_result.to_csv("result.csv", encoding='utf-8', index=False, header=False)
+      df_result_tran.to_csv("result.csv", encoding='utf-8', index=False, header=False)
 
       #print(miss_sgd)
       #print()
