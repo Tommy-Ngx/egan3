@@ -183,14 +183,14 @@ def main (args):
 
   x1 = data_name
   x = x1.split("+")
-
+  print(x)
   gain_parameters = {'batch_size': args.batch_size,
                      'hint_rate': args.hint_rate,
                      'alpha': args.alpha,
                      'iterations': args.iterations,
                      'time': args.time}
    # Load data and introduce missingness
-    
+ 
   #ori_data_x, miss_data_x, data_m = data_loader2(data_name, miss_rate,random)
   miss_rate_caption = "{}% Missing".format(miss_rate)
   col1 = [miss_rate_caption,'RMSE','RMSE','RMSE','RMSE','RMSE','RMSE','MLP','MLP','D.Tree','D.Tree','LogisticR','LogisticR','LogisticR','LogisticR','LogisticR','LogisticR','SVC','SVC','SVC','SVC','SVC','SVC','SGD','SGD','SGD','SGD','SGD','SGD']
@@ -342,38 +342,38 @@ def main (args):
       print()
       print("Datasets: ",data_name)
       #print(gan_rs,egain_rs, mice_rs,miss_rs)
-      col3.append( round(np.mean(egain_rs)*1,2)  + ' ± ' + round(np.std(egain_rs),4) )
-      col3.append( round(np.mean(gan_rs)*1,2)    + ' ± ' + round(np.std(gan_rs),4) )
-      col3.append( round(np.mean(mean_rmse)*1,2) + ' ± ' + round(np.std(mean_rmse),4) )
-      col3.append( round(np.mean(knn_rmse)*1,2)  + ' ± ' + round(np.std(knn_rmse),4) )
-      col3.append( round(np.mean(mice_rmse)*1,2) + ' ± ' + round(np.std(mice_rmse),4) )
-      col3.append( round(np.mean(miss_rmse)*1,2) + ' ± ' + round(np.std(miss_rmse),4) )
+      col3.append( f"{round(np.mean(egain_rs)*1,2) } ± {round(np.std(egain_rs),4)}" )
+      col3.append( f"{round(np.mean(gan_rs)*1,2)   } ± {round(np.std(gan_rs),4)}" )
+      col3.append( f"{round(np.mean(mean_rmse)*1,2)} ± {round(np.std(mean_rmse),4)}" )
+      col3.append( f"{round(np.mean(knn_rmse)*1,2) } ± {round(np.std(knn_rmse),4)}" )
+      col3.append( f"{round(np.mean(mice_rmse)*1,2)} ± {round(np.std(mice_rmse),4)}")
+      col3.append( f"{round(np.mean(miss_rmse)*1,2)} ± {round(np.std(miss_rmse),4)}" )
 
-      col3.append( round(np.mean(egan_mlp)*1,2) + ' ± ' + round(np.std(egan_mlp),4) )
-      col3.append( round(np.mean(gan_mlp)*1,2)  + ' ± ' + round(np.std(gan_mlp),4) )
-      col3.append( round(np.mean(egan_dt)*1,2)  + ' ± ' + round(np.std(egan_dt),4) )
-      col3.append( round(np.mean(gan_dt)*1,2)   + ' ± ' + round(np.std(gan_dt),4) )
+      col3.append( f"{round(np.mean(egan_mlp)*1,2) } ± {round(np.std(egan_mlp),4)}")
+      col3.append( f"{round(np.mean(gan_mlp)*1,2)  } ± { round(np.std(gan_mlp),4)}" )
+      col3.append( f"{round(np.mean(egan_dt)*1,2)  } ± { round(np.std(egan_dt),4)}" )
+      col3.append( f"{round(np.mean(gan_dt)*1,2)   } ± { round(np.std(gan_dt),4)}" )
 
-      col3.append( round(np.mean(egan_lr)*1,2) + ' ± ' + round(np.std(egan_lr),4) )
-      col3.append( round(np.mean(gan_lr)*1,2)  + ' ± ' + round(np.std(gan_lr),4) )
-      col3.append( round(np.mean(mean_lr)*1,2) + ' ± ' + round(np.std(mean_lr),4) )
-      col3.append( round(np.mean(knn_lr)*1,2)  + ' ± ' + round(np.std(knn_lr),4) )
-      col3.append( round(np.mean(mice_lr)*1,2) + ' ± ' + round(np.std(mice_lr),4) )
-      col3.append( round(np.mean(miss_lr)*1,2) + ' ± ' + round(np.std(miss_lr),4) )
+      col3.append( f"{round(np.mean(egan_lr)*1,2)  } ± {round(np.std(egan_lr),4)}" )
+      col3.append( f"{round(np.mean(gan_lr)*1,2)   } ± {round(np.std(gan_lr),4)}" )
+      col3.append( f"{round(np.mean(mean_lr)*1,2)  } ± {round(np.std(mean_lr),4)}" )
+      col3.append( f"{round(np.mean(knn_lr)*1,2)   } ± {round(np.std(knn_lr),4)}" )
+      col3.append( f"{round(np.mean(mice_lr)*1,2)  } ± {round(np.std(mice_lr),4)}" )
+      col3.append( f"{round(np.mean(miss_lr)*1,2)  } ± {round(np.std(miss_lr),4)}" )
 
-      col3.append( round(np.mean(egan_svc)*1,2) + ' ± ' + round(np.std(egan_svc),4) )
-      col3.append( round(np.mean(gan_svc)*1,2)  + ' ± ' + round(np.std(gan_svc),4) )
-      col3.append( round(np.mean(mean_svc)*1,2) + ' ± ' + round(np.std(mean_svc),4) )
-      col3.append( round(np.mean(knn_svc)*1,2)  + ' ± ' + round(np.std(knn_svc),4) )
-      col3.append( round(np.mean(mice_svc)*1,2) + ' ± ' + round(np.std(mice_svc),4) )
-      col3.append( round(np.mean(miss_svc)*1,2) + ' ± ' + round(np.std(miss_svc),4) )       
+      col3.append( f"{round(np.mean(egan_svc)*1,2) } ± { round(np.std(egan_svc),4)}" )
+      col3.append( f"{round(np.mean(gan_svc)*1,2)  } ± { round(np.std(gan_svc),4)}" )
+      col3.append( f"{round(np.mean(mean_svc)*1,2) } ± { round(np.std(mean_svc),4)}" )
+      col3.append( f"{round(np.mean(knn_svc)*1,2)  } ± {round(np.std(knn_svc),4)}" )
+      col3.append( f"{round(np.mean(mice_svc)*1,2) } ± {round(np.std(mice_svc),4)}" )
+      col3.append( f"{round(np.mean(miss_svc)*1,2) } ± { round(np.std(miss_svc),4)}" )       
 
-      col3.append( round(np.mean(egan_sgd)*1,2) + ' ± ' + round(np.std(egan_sgd),4) )
-      col3.append( round(np.mean(gan_sgd)*1,2)  + ' ± ' + round(np.std(gan_sgd),4) )
-      col3.append( round(np.mean(mean_sgd)*1,2) + ' ± ' + round(np.std(mean_sgd),4) )
-      col3.append( round(np.mean(knn_sgd)*1,2)  + ' ± ' + round(np.std(knn_sgd),4) )
-      col3.append( round(np.mean(mice_sgd)*1,2) + ' ± ' + round(np.std(mice_sgd),4) )
-      col3.append( round(np.mean(miss_sgd)*1,2) + ' ± ' + round(np.std(miss_sgd),4) )
+      col3.append( f"{round(np.mean(egan_sgd)*1,2) } ± { round(np.std(egan_sgd),4)}" )
+      col3.append( f"{round(np.mean(gan_sgd)*1,2)  } ± { round(np.std(gan_sgd),4)}" )
+      col3.append( f"{round(np.mean(mean_sgd)*1,2) } ± { round(np.std(mean_sgd),4)}" )
+      col3.append( f"{round(np.mean(knn_sgd)*1,2)  } ± {round(np.std(knn_sgd),4)}" )
+      col3.append( f"{round(np.mean(mice_sgd)*1,2) } ± { round(np.std(mice_sgd),4)}" )
+      col3.append( f"{round(np.mean(miss_sgd)*1,2) } ± {round(np.std(miss_sgd),4)}" )
 
       '''
       print('RMSE  GAIN: {} ± {}'.format(round(np.mean(gan_rs)*1,2), round(np.std(gan_rs),4)))
@@ -437,7 +437,7 @@ def main (args):
       '''
       result.append(col3)
       df_result = pd.DataFrame(result)
-      print(df_result)
+      print(df_result.T)
 
 
       #print(miss_sgd)
@@ -478,7 +478,7 @@ def main (args):
       #print( 'Save results in Imputed_data_MICE.csv')
 
 
-      return imputed_data_mf, rmse_mf
+  return imputed_data_mf, rmse_mf
 
 
 if __name__ == '__main__':  
