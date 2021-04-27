@@ -443,6 +443,7 @@ def main (args):
       print(df_result_tran.to_string(index=False,header=False))
       #df_result_tran.to_csv("result.csv", encoding='utf-8', index=False, header=False)
       df_result_tran.to_csv("result.csv", index=False, header=False)
+      df_result_tran.to_excel("result.xls", encoding='utf-8',index=False, header=False)
 
       #print(miss_sgd)
       #print()
