@@ -369,7 +369,7 @@ def main (args):
       ##gan_rmspe, egan_rmspe, knn_rmspe , mean_rmspe, miss_rmspe, mice_rmspe
       col3.append( f"{round(np.mean(egan_rmspe)*1,2)} ± {round(np.std(egan_rmspe),4)}" )
       col3.append( f"{round(np.mean(gan_rmspe)*1,2)} ± {round(np.std(gan_rmspe),4)}" )
-      col3.append( f"{round(np.mean(mean_rmspe)*1,2)} ± {round(np.std(mean_rmsơe),4)}" )
+      col3.append( f"{round(np.mean(mean_rmspe)*1,2)} ± {round(np.std(mean_rmspe),4)}" )
       col3.append( f"{round(np.mean(knn_rmspe)*1,2)} ± {round(np.std(knn_rmspe),4)}" )
       col3.append( f"{round(np.mean(mice_rmspe)*1,2)} ± {round(np.std(mice_rmspe),4)}")
       col3.append( f"{round(np.mean(miss_rmspe)*1,2)} ± {round(np.std(miss_rmspe),4)}" )
