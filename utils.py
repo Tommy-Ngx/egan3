@@ -137,6 +137,22 @@ def rmse_loss (ori_data, imputed_data, data_m):
   
   return rmse
 
+def rmspe_loss (ori_data, imputed_data, data_m):
+  #rmspe = (np.sqrt(np.mean(np.square((y_true - y_pred) / y_true)))) * 100
+
+  ori_data, norm_parameters = normalization(ori_data)
+  imputed_data, _ = normalization(imputed_data, norm_parameters)
+    
+  # Only for missing values
+  nominator = np.sum(((1-data_m) * ori_data - (1-data_m) * imputed_data)**2)
+  denominator = np.sum(1-data_m)
+  
+  rmspe = np.sqrt(nominator/float(denominator))
+  
+  return rmse
+
+
+
 
 def xavier_init(size):
   '''Xavier initialization.
