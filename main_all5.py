@@ -193,8 +193,8 @@ def main (args):
  
   #ori_data_x, miss_data_x, data_m = data_loader2(data_name, miss_rate,random)
   miss_rate_caption = "{}% Missing".format(int(miss_rate*100))
-  col1 = [miss_rate_caption,'RMSE','RMSE','RMSE','RMSE','RMSE','RMSE','MLP','MLP','D.Tree','D.Tree','LogisticR','LogisticR','LogisticR','LogisticR','LogisticR','LogisticR','SVC','SVC','SVC','SVC','SVC','SVC','SGD','SGD','SGD','SGD','SGD','SGD']
-  col2 = ['Method', 'EGAIN', 'GAIN', 'MEAN','KNN','MICE','M.FORE','EGAIN','GAIN','EGAIN','GAIN','EGAIN', 'GAIN', 'MEAN','KNN','MICE','M.FORE','EGAIN', 'GAIN', 'MEAN','KNN','MICE','M.FORE','EGAIN', 'GAIN', 'MEAN','KNN','MICE','M.FORE']
+  col1 = [miss_rate_caption,'RMSE','RMSE','RMSE','RMSE','RMSE','RMSE','RMSPE','RMSPE','RMSPE','RMSPE','RMSPE','RMSPE','','MLP','MLP','D.Tree','D.Tree','LogisticR','LogisticR','LogisticR','LogisticR','LogisticR','LogisticR','SVC','SVC','SVC','SVC','SVC','SVC','SGD','SGD','SGD','SGD','SGD','SGD']
+  col2 = ['Method', 'EGAIN', 'GAIN', 'MEAN','KNN','MICE','M.FORE','EGAIN', 'GAIN', 'MEAN','KNN','MICE','M.FORE','','EGAIN','GAIN','EGAIN','GAIN','EGAIN', 'GAIN', 'MEAN','KNN','MICE','M.FORE','EGAIN', 'GAIN', 'MEAN','KNN','MICE','M.FORE','EGAIN', 'GAIN', 'MEAN','KNN','MICE','M.FORE']
   result = [col1,col2]
 
   for data_train in x:
@@ -210,6 +210,7 @@ def main (args):
       gan_rs, egain_rs, mice_rs,miss_rs, gan_mlp, gan_dt, egan_mlp, egan_dt = [],[],[],[],[],[],[],[];
       gan_svc, egan_svc, gan_lr, egan_lr, gan_sgd, egan_sgd, gan_gau, egan_gau = [],[],[],[],[],[],[],[];
       knn_rmse , mean_rmse, miss_rmse, mice_rmse =  [],[],[],[];
+      gan_rmspe, egan_rmspe, knn_rmspe , mean_rmspe, miss_rmspe, mice_rmspe =  [],[],[],[],[],[];
       knn_lr, knn_svc, knn_sgd, mean_lr, mean_svc, mean_sgd =    [],[],[],[],[],[];
       miss_lr, miss_svc, miss_sgd, mice_lr, mice_svc, mice_sgd = [],[],[],[],[],[];
 
@@ -264,6 +265,22 @@ def main (args):
         knn_rmse.append(rmse_knn)
         mice_rmse.append(rmse_mice)
         miss_rmse.append(rmse_mf)
+
+        # Report the RMSPE performance
+        rmspe      = rmspe_loss (ori_data_x, imputed_data_x, data_m)
+        rmspe_e    = rmspe_loss (ori_data_x, imputed_data_x_e, data_m)
+        rmspe_mean = rmspe_loss (ori_data_x, imputed_data_x_mean, data_m)
+        rmspe_knn  = rmspe_loss (ori_data_x, imputed_data_x_knn, data_m)
+        rmsơe_mf   = rmspe_loss (ori_data_x, imputed_data_mf, data_m)
+        rmspe_mice = rmspe_loss (ori_data_x, imputed_data_mice, data_m)
+
+        #gan_rmspe, egan_rmspe, knn_rmspe , mean_rmspe, miss_rmspe, mice_rmspe
+        gan_rmspe.append(rmspe)
+        egan_rmspe.append(rmspe_e)
+        mean_rmspe.append(rmspe_mean)
+        knn_rmspe.append(rmspe_knn)
+        mice_rmspe.append(rmspe_mice)
+        miss_rmspe.append(rmspe_mf)
 
 
         mi_data = miss_data_x.astype(float)
@@ -348,6 +365,15 @@ def main (args):
       col3.append( f"{round(np.mean(knn_rmse)*1,2)} ± {round(np.std(knn_rmse),4)}" )
       col3.append( f"{round(np.mean(mice_rmse)*1,2)} ± {round(np.std(mice_rmse),4)}")
       col3.append( f"{round(np.mean(miss_rmse)*1,2)} ± {round(np.std(miss_rmse),4)}" )
+
+      ##gan_rmspe, egan_rmspe, knn_rmspe , mean_rmspe, miss_rmspe, mice_rmspe
+      col3.append( f"{round(np.mean(egan_rmspe)*1,2)} ± {round(np.std(egan_rmspe),4)}" )
+      col3.append( f"{round(np.mean(gan_rmspe)*1,2)} ± {round(np.std(gan_rmspe),4)}" )
+      col3.append( f"{round(np.mean(mean_rmspe)*1,2)} ± {round(np.std(mean_rmsơe),4)}" )
+      col3.append( f"{round(np.mean(knn_rmspe)*1,2)} ± {round(np.std(knn_rmspe),4)}" )
+      col3.append( f"{round(np.mean(mice_rmspe)*1,2)} ± {round(np.std(mice_rmspe),4)}")
+      col3.append( f"{round(np.mean(miss_rmspe)*1,2)} ± {round(np.std(miss_rmspe),4)}" )
+      col3.append([])
 
       col3.append( f"{round(np.mean(egan_mlp)*1,2)} ± {round(np.std(egan_mlp),4)}")
       col3.append( f"{round(np.mean(gan_mlp)*1,2)} ± { round(np.std(gan_mlp),4)}" )

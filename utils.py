@@ -149,7 +149,7 @@ def rmspe_loss (ori_data, imputed_data, data_m):
   
   rmspe = np.sqrt(nominator/float(denominator))
   
-  return rmspe
+  return rmspe 
 
 
 
