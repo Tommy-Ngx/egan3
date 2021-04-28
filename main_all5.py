@@ -29,7 +29,7 @@ import numpy as np
 from data_loader import data_loader, data_loader2, data_loader3
 from gain_ori import gain
 from egain import egain
-from utils import rmse_loss, normalization
+from utils import rmse_loss,rmspe_loss, normalization
 from missingpy import MissForest
 from sklearn import metrics
 from math import sqrt
