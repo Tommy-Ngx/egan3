@@ -271,7 +271,7 @@ def main (args):
         rmspe_e    = rmspe_loss (ori_data_x, imputed_data_x_e, data_m)
         rmspe_mean = rmspe_loss (ori_data_x, imputed_data_x_mean, data_m)
         rmspe_knn  = rmspe_loss (ori_data_x, imputed_data_x_knn, data_m)
-        rmsơe_mf   = rmspe_loss (ori_data_x, imputed_data_mf, data_m)
+        rmspe_mf   = rmspe_loss (ori_data_x, imputed_data_mf, data_m)
         rmspe_mice = rmspe_loss (ori_data_x, imputed_data_mice, data_m)
 
         #gan_rmspe, egan_rmspe, knn_rmspe , mean_rmspe, miss_rmspe, mice_rmspe
